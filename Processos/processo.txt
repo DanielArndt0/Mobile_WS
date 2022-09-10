@@ -1,0 +1,42 @@
+Criar SplashScreen:
+
+  Primeiro é preciso criar um Handler para cuidar do tempo em que a atividade vai ser exibida:
+  - new Handler()
+
+  Logo após, precisamos definir dois parametros:
+    O primeiro é o que será executado após o término do tempo;
+    O segundo é o tempo.
+    - new Handler().postDelayed(new Runnable {
+    -  @Override
+    -      public void run() { Escreva aqui o que será executado }
+    -  }, tempo);
+
+  Após configurar o Handler, é só criar uma transição de ativivade que será executada após o tempo definido:
+  - startActivity(new Intent(AtividadeAtual.this, AtividadeDestino.class));
+  - finish(); 
+
+  O código final ficará parecido com este
+  - new Handler().postDelayed(new Runnable {
+  -   @Override
+  -   public void run() { 
+  -     startActivity(new Intent(AtividadeAtual.this, AtividadeDestino.class));
+  -     finish(); 
+  -   }
+  - }, tempo);
+
+  O código acima em formato de função:
+  - public void splash(long time) {
+  -   new Handler().postDelayed(new Runnable {
+  -   @Override
+  -     public void run() { 
+  -        startActivity(new Intent(AtividadeAtual.this, AtividadeDestino.class));
+  -        finish(); 
+  -     }
+  -   }, time);
+  - }
+
+
+Criar SplashScreen com tempos de inicialização diferentes: (Só funciona para a activity atual)
+  - Context context;
+  - SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+  
