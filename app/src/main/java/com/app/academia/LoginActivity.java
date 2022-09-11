@@ -2,10 +2,13 @@ package com.app.academia;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.app.academia.classes.repository.DAO;
 import com.app.academia.classes.validations.Check;
@@ -24,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText user, password;
     TextInputLayout userBox, passwordBox;
     MaterialButton login, signin;
+    int attempts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordBox = binding.logSenhaBox;
         login = binding.logAcessar;
         signin = binding.logCad;
+        attempts = 0;
 
         listeners();
     }
@@ -77,9 +82,43 @@ public class LoginActivity extends AppCompatActivity {
                 ))) {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
+                } else {
+                    attempts++;
+                    Toast.makeText(LoginActivity.this, "Usuário/Senha inválidos!", Toast.LENGTH_SHORT).show();
+                    checkAttempts(3, 10000);
                 }
                 fieldCheck.clear();
             }
         });
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void checkAttempts(int limitAttempts, long blockedTime) {
+        if (attempts == limitAttempts) {
+            setEnabled(false);
+            fieldTextEnabled(false);
+            Toast.makeText(LoginActivity.this, String.format("Login bloqueado: aguarde %ds!", blockedTime/1000), Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    attempts = 0;
+                    setEnabled(true);
+                    fieldTextEnabled(false);
+                }
+            }, blockedTime);
+        }
+    }
+
+    private void setEnabled(boolean status) {
+        login.setEnabled(status);
+        signin.setEnabled(status);
+        login.setBackgroundColor(status ? getColor(android.R.color.holo_green_dark) : getColor(android.R.color.darker_gray));
+        signin.setBackgroundColor(status ? getColor(android.R.color.holo_green_dark) : getColor(android.R.color.darker_gray));
+    }
+
+    private void fieldTextEnabled(boolean status) {
+        userBox.setEnabled(status);
+        passwordBox.setEnabled(status);
     }
 }

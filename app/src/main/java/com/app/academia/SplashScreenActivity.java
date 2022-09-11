@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -34,12 +35,15 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void splash(long firstTime, long time) {
-        DAO db = new DAO(getApplicationContext(), "i", "timer");
-        if (!Boolean.parseBoolean(db.get("time"))) {
-            db.set("time", "true");
+        DAO db = new DAO(getApplicationContext(), "i", "access");
+        if (!Boolean.parseBoolean(db.get("first"))) {
+            db.set("first", "true");
+            Log.d("fad", "splash: 6000");
             changeAct(firstTime);
+        } else {
+            Log.d("fad", "splash: 3000");
+            changeAct(time);
         }
-        changeAct(time);
     }
 
 
