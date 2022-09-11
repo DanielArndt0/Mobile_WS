@@ -1,5 +1,8 @@
 package com.app.academia.classes.validations;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+
 import java.util.List;
 
 public class FieldCheck {
@@ -20,6 +23,7 @@ public class FieldCheck {
     public void clear() {
         if (checkList != null) {
             for(Check check : checkList) {
+                if (!check.isToBeVerified())
                 check.getTextBox().setErrorEnabled(false);
             }
         }

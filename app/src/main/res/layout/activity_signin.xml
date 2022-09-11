@@ -75,7 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:inputType="textPhonetic"
+                    android:inputType="phone"
                     android:hint="Celular" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,7 +156,6 @@
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@android:color/holo_green_dark"
                 android:text="Cancelar"/>
-
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

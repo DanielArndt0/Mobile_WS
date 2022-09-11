@@ -6,14 +6,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.app.academia.classes.repository.DB;
+import com.app.academia.classes.repository.DAO;
 import com.app.academia.classes.validations.Check;
 import com.app.academia.classes.validations.FieldCheck;
 import com.app.academia.databinding.ActivitySigninBinding;
@@ -90,35 +90,31 @@ public class SigninActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor dbs = DB.set(getApplicationContext(), "db");    // Setters do db
-                SharedPreferences dbg = DB.get(getApplicationContext(), "db");    // Getters do db
-                String querry = getString(R.string.querry);     // Formato de querry
-
                 String sName = name.getText().toString();
                 String sPassword = password.getText().toString();
                 String sEmail = email.getText().toString();
                 String sUser = user.getText().toString();
                 String sRePass = repassword.getText().toString();
 
+                DAO db = new DAO(getApplicationContext(), "db", sUser);
 
                 FieldCheck fieldCheck = new FieldCheck();
                 if (fieldCheck.execute(Arrays.asList(
                         new Check(nameBox, !constraint(sName, "[\\w_.] [\\w_.]"), "Precisa conter nome e sobrenome"),
                         new Check(emailBox, !constraint(sEmail, "^([\\p{Alpha}][\\w_.]{5,}@[\\w_.]{3,}[.com|.com.br])$"), "Email inválido"),
-                        new Check(userBox, !constraint(sUser, "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[\\p{Alpha}][\\w_.]{5,}$"), "Usuário inválido"),
+                        new Check(userBox, !constraint(sUser, "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[\\p{Alpha}][\\w_.]{5,}$") || sUser.equals(db.get("user")), "Usuário inválido"),
                         new Check(passwordBox, !constraint(sPassword, "^(?=.*[A-Z])(?=.*[a-z])(?=.*[\\d]{2,})[\\w_.]{8,}$"), "Senha inválida"),
-                        new Check(repasswordBox, !sRePass.equals(sPassword), getString(R.string.invalid)),
-                        new Check(userBox, sUser.equals(dbg.getString(String.format(querry, sUser, "user"), new String())), "Usuário já existe")
+                        new Check(repasswordBox, !sRePass.equals(sPassword), "Senha inválida")
                 ))) {
+
+                    db.set("user", sUser);
+                    db.set("name", sName);
+                    db.set("password", sPassword);
+                    db.set("email", sEmail);
+
                     Toast.makeText(SigninActivity.this, "Cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
-
-                    dbs.putString(String.format(querry, sUser, "user"), sUser).apply();
-                    dbs.putString(String.format(querry, sUser, "name"), sName).apply();
-                    dbs.putString(String.format(querry, sUser, "password"), sPassword).apply();
-                    dbs.putString(String.format(querry, sUser, "email"), sEmail).apply();
-
-                    fieldCheck.clear();
                 }
+                fieldCheck.clear();
             }
         });
     }
@@ -130,6 +126,7 @@ public class SigninActivity extends AppCompatActivity {
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(SigninActivity.this, LoginActivity.class));
                         finish();
                     }
                 })

@@ -2,5 +2,5 @@
     <string name="app_name">academia</string>
     <string name="invalid">Verifique este campo</string>
 
-    <string name="querry">%s_%s</string>
+    <string name="querry">%s.%s</string>
 </resources>

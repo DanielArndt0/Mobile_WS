@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.app.academia.classes.repository.DAO;
 import com.app.academia.databinding.ActivitySplashScreenBinding;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -33,14 +34,10 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void splash(long firstTime, long time) {
-        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        boolean b = false;
-        if (!sharedPreferences.getBoolean("i", b)) {
-            editor.putBoolean("i", true).apply();
+        DAO db = new DAO(getApplicationContext(), "i", "timer");
+        if (!Boolean.parseBoolean(db.get("time"))) {
+            db.set("time", "true");
             changeAct(firstTime);
-            return;
         }
         changeAct(time);
     }
