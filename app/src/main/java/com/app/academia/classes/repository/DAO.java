@@ -26,6 +26,25 @@ public class DAO {
         this.dbquerry = context.getString(R.string.querry);
     }
 
+    public void setGlobal(String key, String value) {
+        if (this.id == null) {
+            throw new NullPointerException();
+        }
+        DB.set(context, filename)
+                .putString(key, value)
+                .apply();
+    }
+
+    public String getGlobal(String key) {
+        if (this.id == null) {
+            throw new NullPointerException();
+        }
+        return DB.get(context, filename)
+                .getString(key, new String());
+    }
+
+
+
     public void set(String key, String value) {
         if (this.id == null) {
             throw new NullPointerException();

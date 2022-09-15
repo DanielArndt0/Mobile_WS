@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">academia</string>
-    <string name="invalid">Verifique este campo</string>
 
+    <string name="fln">db</string>
     <string name="querry">%s.%s</string>
+    <string name="logged">logged</string>
+    <string name="user">user</string>
+    <string name="name">name</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="profile">profile</string>
+    <string name="splash">splash</string>
 </resources>

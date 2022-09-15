@@ -70,18 +70,25 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String sUser = user.getText().toString();
                 String sPassword = password.getText().toString();
-                DAO db = new DAO(getApplicationContext(), "db", sUser);
+                DAO db = new DAO(getApplicationContext(), getString(R.string.fln), sUser);
 
-                String userDB = db.get("user");
-                String passwordDB = db.get("password");
+                String userDB = db.get(getString(R.string.user));
+                String passwordDB = db.get(getString(R.string.password));
 
                 FieldCheck fieldCheck = new FieldCheck();
                 if (fieldCheck.execute(Arrays.asList(
                         new Check(userBox, !userDB.equals(sUser) || sUser.isEmpty(), "Usuário não encontrado"),
                         new Check(passwordBox, !passwordDB.equals(sPassword) || sUser.isEmpty(), "Senha incorreta")
                 ))) {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    db.setGlobal(getString(R.string.logged), sUser);
+
+                    if (!Boolean.parseBoolean(db.getGlobal(getString(R.string.profile)))) {
+                        startActivity(new Intent(LoginActivity.this, CadPerfilActivity.class));
+                    } else {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    }
                     finish();
+
                 } else {
                     attempts++;
                     Toast.makeText(LoginActivity.this, "Usuário/Senha inválidos!", Toast.LENGTH_SHORT).show();
@@ -95,22 +102,26 @@ public class LoginActivity extends AppCompatActivity {
     @SuppressLint("DefaultLocale")
     private void checkAttempts(int limitAttempts, long blockedTime) {
         if (attempts == limitAttempts) {
-            setEnabled(false);
+            buttonEnabled(false);
             fieldTextEnabled(false);
-            Toast.makeText(LoginActivity.this, String.format("Login bloqueado: aguarde %ds!", blockedTime/1000), Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, String.format("Login bloqueado: aguarde %ds!", blockedTime / 1000), Toast.LENGTH_SHORT).show();
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     attempts = 0;
-                    setEnabled(true);
+                    buttonEnabled(true);
                     fieldTextEnabled(false);
                 }
             }, blockedTime);
         }
     }
 
-    private void setEnabled(boolean status) {
+    private void ifFirstLogin() {
+
+    }
+
+    private void buttonEnabled(boolean status) {
         login.setEnabled(status);
         signin.setEnabled(status);
         login.setBackgroundColor(status ? getColor(android.R.color.holo_green_dark) : getColor(android.R.color.darker_gray));

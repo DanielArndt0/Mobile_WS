@@ -35,13 +35,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void splash(long firstTime, long time) {
-        DAO db = new DAO(getApplicationContext(), "i", "access");
-        if (!Boolean.parseBoolean(db.get("first"))) {
-            db.set("first", "true");
-            Log.d("fad", "splash: 6000");
+        DAO db = new DAO(getApplicationContext(), "db", "");
+        if (!Boolean.parseBoolean(db.getGlobal(getString(R.string.splash)))) {
+            db.setGlobal(getString(R.string.splash), "true");
             changeAct(firstTime);
         } else {
-            Log.d("fad", "splash: 3000");
             changeAct(time);
         }
     }

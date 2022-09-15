@@ -96,21 +96,21 @@ public class SigninActivity extends AppCompatActivity {
                 String sUser = user.getText().toString();
                 String sRePass = repassword.getText().toString();
 
-                DAO db = new DAO(getApplicationContext(), "db", sUser);
+                DAO db = new DAO(getApplicationContext(), getString(R.string.fln), sUser);
 
                 FieldCheck fieldCheck = new FieldCheck();
                 if (fieldCheck.execute(Arrays.asList(
                         new Check(nameBox, !constraint(sName, "[\\w_.] [\\w_.]"), "Precisa conter nome e sobrenome"),
                         new Check(emailBox, !constraint(sEmail, "^([\\p{Alpha}][\\w_.]{5,}@[\\w_.]{3,}[.com|.com.br])$"), "Email inválido"),
                         new Check(userBox, !constraint(sUser, "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[\\p{Alpha}][\\w_.]{5,}$") || sUser.equals(db.get("user")), "Usuário inválido"),
-                        new Check(passwordBox, !constraint(sPassword, "^(?=.*[A-Z])(?=.*[a-z])(?=.*[\\d]{2,})[\\w_.]{8,}$"), "Senha inválida"),
-                        new Check(repasswordBox, !sRePass.equals(sPassword), "Senha inválida")
+                        new Check(passwordBox, !constraint(sPassword, "^(?=.*[A-Z])(?=.*[a-z])(?=.*[\\d])[\\w_.]{8,}$"), "Senha inválida"),
+                        new Check(repasswordBox, !sRePass.equals(sPassword), "Este campo deve ser igual a senha")
                 ))) {
 
-                    db.set("user", sUser);
-                    db.set("name", sName);
-                    db.set("password", sPassword);
-                    db.set("email", sEmail);
+                    db.set(getString(R.string.user), sUser);
+                    db.set(getString(R.string.name), sName);
+                    db.set(getString(R.string.password), sPassword);
+                    db.set(getString(R.string.email), sEmail);
 
                     Toast.makeText(SigninActivity.this, "Cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
                 }
