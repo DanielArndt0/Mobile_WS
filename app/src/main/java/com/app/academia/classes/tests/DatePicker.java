@@ -1,33 +1,31 @@
-package com.app.academia.classes.pickers;
+package com.app.academia.classes.tests;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class DatePicker extends DialogFragment {
     private final DatePickerDialog.OnDateSetListener listener;
-    private final Calendar calendar;
+    private final Calendar c;
 
     public DatePicker(DatePickerDialog.OnDateSetListener listener, Calendar calendar) {
         this.listener = listener;
-        this.calendar = calendar;
+        this.c = calendar;
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+    public Dialog onCreateDialog(Bundle args) {
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog pickerDialog = new DatePickerDialog(getActivity(), listener, year, month, day);
-        pickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+        pickerDialog.getDatePicker().setMaxDate(c.getTimeInMillis());
         return pickerDialog;
     }
 }

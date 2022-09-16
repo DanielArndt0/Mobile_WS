@@ -57,8 +57,6 @@ public class CadPerfilActivity extends AppCompatActivity {
         setContentView(view);
 
         init();
-
-
     }
 
     private void init() {
