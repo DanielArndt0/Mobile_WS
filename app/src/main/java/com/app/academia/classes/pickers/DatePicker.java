@@ -20,10 +20,6 @@ public class DatePicker extends DialogFragment {
         this.calendar = calendar;
     }
 
-    public Date getTime() {
-        return calendar.getTime();
-    }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
