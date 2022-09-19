@@ -1,15 +1,26 @@
 package com.app.academia;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.ImageCapture;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,6 +44,8 @@ public class SigninActivity extends AppCompatActivity {
     MaterialButton cancel, signin;
     ActionBar actionBar;
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +57,7 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     private void init() {
+
         name = binding.cadNome;
         email = binding.cadEmail;
         cel = binding.cadCelular;
@@ -61,7 +75,6 @@ public class SigninActivity extends AppCompatActivity {
         signin = binding.cadCad;
         cancel = binding.cadCancel;
 
-
         setSupportActionBar(binding.cadToolbar);
         actionBar = getSupportActionBar();
         if (actionBar == null) {
@@ -71,6 +84,35 @@ public class SigninActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_32);
 
         listeners();
+
+        binding.cadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    requestPermissions();
+                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                } catch (ActivityNotFoundException ignored) {
+                }
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            assert data != null;
+            binding.cadImage.setImageBitmap((Bitmap) data.getExtras().get("data"));
+        }
+    }
+
+    private void requestPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
+        }
     }
 
     public static boolean constraint(String str, String conditions) {

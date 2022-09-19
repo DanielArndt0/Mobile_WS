@@ -5,12 +5,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AlertDialogLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PackageManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +30,7 @@ import com.app.academia.classes.pickers.DatePicker;
 import com.app.academia.classes.pickers.TimePicker;
 import com.app.academia.classes.repository.DAO;
 import com.app.academia.classes.repository.DB;
+import com.app.academia.classes.utils.DateUtils;
 import com.app.academia.classes.validations.Check;
 import com.app.academia.classes.validations.FieldCheck;
 import com.app.academia.databinding.ActivityCadPerfilBinding;
@@ -78,8 +84,8 @@ public class CadPerfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 imc();
-                Period between;
-                between = Period.between(LocalDate.parse(binding.dataNascimento.getText().toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy")), LocalDate.now());
+
+                Period between = DateUtils.getPeriodBetween(binding.dataNascimento.getText().toString(), LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), "dd/MM/yyyy");
 
                 FieldCheck fieldCheck = new FieldCheck();
                 if (fieldCheck.execute(Arrays.asList(
@@ -159,7 +165,14 @@ public class CadPerfilActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("DefaultLocale")
     private void imc() {
+        String peso = binding.peso.getText().toString(), altura = binding.altura.getText().toString();
+
+        if (peso.isEmpty() || altura.isEmpty()) {
+            return;
+        }
+
         double sPeso = Double.parseDouble(binding.peso.getText().toString());
         double sAltura = Double.parseDouble(binding.altura.getText().toString());
         double result = sPeso / (sAltura * sAltura);
